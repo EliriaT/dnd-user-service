@@ -1,0 +1,11 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    schema: "db/migrations"
+    queries: "db/query"
+    gen:
+      go:
+        package: "db"
+        out: "db/internal/"
+        emit_json_tags: true
+    output_querier_file_name: "querier.go"
