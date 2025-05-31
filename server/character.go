@@ -48,3 +48,29 @@ func (server *Server) createCharacter(ctx *gin.Context) {
 		ID: character.ID,
 	})
 }
+
+func (server *Server) getCharactersByUserID(ctx *gin.Context) {
+	var uri dto.GetUserByIdRequest
+	if err := ctx.ShouldBindUri(&uri); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid or missing id parameter"})
+		return
+	}
+
+	_, err := server.queries.GetUserByID(ctx, uri.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	characters, err := server.queries.GetCharactersByUserID(ctx, uri.ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, characters)
+}
