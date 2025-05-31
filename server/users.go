@@ -71,7 +71,7 @@ func (server *Server) login(ctx *gin.Context) {
 }
 
 func (server *Server) getUserByID(ctx *gin.Context) {
-	var req dto.GetUserByIdRequest
+	var req dto.GetIdRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid or missing id parameter"})
 		return

@@ -9,7 +9,7 @@ import (
 )
 
 func (server *Server) createCharacter(ctx *gin.Context) {
-	var uri dto.GetUserByIdRequest
+	var uri dto.GetIdRequest
 	if err := ctx.ShouldBindUri(&uri); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid or missing id parameter"})
 		return
@@ -50,7 +50,7 @@ func (server *Server) createCharacter(ctx *gin.Context) {
 }
 
 func (server *Server) getCharactersByUserID(ctx *gin.Context) {
-	var uri dto.GetUserByIdRequest
+	var uri dto.GetIdRequest
 	if err := ctx.ShouldBindUri(&uri); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid or missing id parameter"})
 		return
@@ -73,4 +73,24 @@ func (server *Server) getCharactersByUserID(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, characters)
+}
+
+func (server *Server) getCharacterByID(ctx *gin.Context) {
+	var uri dto.GetIdRequest
+	if err := ctx.ShouldBindUri(&uri); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid or missing id parameter"})
+		return
+	}
+
+	character, err := server.queries.GetCharacterByID(ctx, uri.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "character not found"})
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, character)
 }
