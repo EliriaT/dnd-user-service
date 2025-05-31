@@ -70,6 +70,25 @@ func (server *Server) login(ctx *gin.Context) {
 	})
 }
 
-//func (server *Server) getUserByID(ctx *gin.Context) {
-//
-//}
+func (server *Server) getUserByID(ctx *gin.Context) {
+	var req dto.GetUserByIdRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid or missing id parameter"})
+		return
+	}
+
+	user, err := server.queries.GetUserByID(ctx, req.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, dto.UserResponse{
+		ID:       user.ID,
+		Username: user.Username,
+	})
+}

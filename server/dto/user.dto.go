@@ -15,3 +15,7 @@ type UserResponse struct {
 	ID       int64  `json:"id"`
 	Username string `json:"username"`
 }
+
+type GetUserByIdRequest struct {
+	ID int64 `uri:"id" binding:"required,min=1"`
+}
