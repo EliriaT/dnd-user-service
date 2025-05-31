@@ -1,4 +1,9 @@
-DB_URL=postgresql://root:secret@localhost:5432/user-service?sslmode=disable
+DB_URL=postgres://root:secret@localhost:5432/user-db?sslmode=disable
+MIGRATIONS_DIR := db/migrations
+
+define create_migration
+	migrate create -ext sql -dir $(MIGRATIONS_DIR) -seq $(1)
+endef
 
 network:
 	docker network create dnd-network
@@ -15,14 +20,17 @@ createdb:
 dropdb:
 	docker exec -it postgres12 dropdb user-db
 
+create_migration:
+	$(call create_migration,$(filter-out $@,$(MAKECMDGOALS)))
+
 migrateup:
-	migrate -path db/migration -database "$(DB_URL)" -verbose up
+	migrate -path db/migrations -database "$(DB_URL)" -verbose up
 
 migratedown:
-	migrate -path db/migration -database "$(DB_URL)" -verbose down
+	migrate -path db/migrations -database "$(DB_URL)" -verbose down
 
 migrateversion:
-	migrate -path db/migration/ -database "$(DB_URL)" force 1
+	migrate -path db/migrations/ -database "$(DB_URL)" force 1
 
 sqlc:
 	sqlc generate
