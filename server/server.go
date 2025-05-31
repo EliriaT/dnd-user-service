@@ -29,7 +29,7 @@ func (server *Server) setupRouter() {
 	router.GET("/users/:id", server.getUserByID)
 	router.POST("/users/login", server.login)
 	//router.GET("/users/:id/character", server.getCharactersByUserID)
-	//router.POST("/users/:id/characters", server.getCharactersByUserID)
+	router.POST("/users/:id/characters", server.createCharacter)
 	//router.GET("/characters/:id", server.getCharacterByID)
 
 	server.router = router
