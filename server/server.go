@@ -27,7 +27,7 @@ func (server *Server) setupRouter() {
 
 	router.POST("/users", server.createUser)
 	//router.GET("/users/:id", server.getUserByID)
-	//router.POST("/users/login", server.loginUser)
+	router.POST("/users/login", server.login)
 	//router.GET("/users/:id/character", server.getCharactersByUserID)
 	//router.POST("/users/:id/characters", server.getCharactersByUserID)
 	//router.GET("/characters/:id", server.getCharacterByID)
