@@ -1,4 +1,4 @@
-DB_URL=postgres://root:secret@localhost:5432/user-db?sslmode=disable
+DB_URL=postgres://root:secret@localhost:5434/user-db?sslmode=disable
 MIGRATIONS_DIR := db/migrations
 
 define create_migration
@@ -9,16 +9,16 @@ network:
 	docker network create dnd-network
 
 postgres:
-	docker run --name postgres12 --network dnd-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:12-alpine
+	docker run --name user-db --network dnd-network -p 5434:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:12-alpine
 
 restartpg:
-	docker restart postgres12
+	docker restart user-db
 
 createdb:
-	docker exec -it postgres12 createdb --username=root --owner=root user-db
+	docker exec -it user-db createdb --username=root --owner=root user-db
 
 dropdb:
-	docker exec -it postgres12 dropdb user-db
+	docker exec -it user-db dropdb user-db
 
 create_migration:
 	$(call create_migration,$(filter-out $@,$(MAKECMDGOALS)))
