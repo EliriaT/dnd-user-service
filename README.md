@@ -7,6 +7,9 @@ Run:
 `make postgres`
 `make createdb`
 `make migrateup`
+`make server`
+
+or
 
 `docker build -t eliriat/dnd-user-service .`
 `docker compose up`
