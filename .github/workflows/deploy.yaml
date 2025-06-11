@@ -51,7 +51,7 @@ jobs:
       - name: Wait for rolling update to complete
         run: |
           set -e
-          if ! kubectl rollout status deployment cloud-app-deployment --timeout=60s; then
+          if ! kubectl rollout status deployment dnd-user-service --timeout=60s; then
             echo "ROLLBACK_NEEDED=true" >> $GITHUB_ENV
           fi
 
@@ -59,4 +59,4 @@ jobs:
         if: env.ROLLBACK_NEEDED == 'true'
         run: |
           echo "Rolling back due to failed rollout..."
-          kubectl rollout undo deployment cloud-app-deployment
+          kubectl rollout undo deployment dnd-user-service
